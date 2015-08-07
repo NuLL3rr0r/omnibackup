@@ -1,0 +1,613 @@
+{
+    "temp_dir" :  "/var/tmp",
+
+    "compression" :
+    {
+        "algorithm"            : "lzma2",
+        "level"                : "6e",
+        "preserve_permissions" : "yes"
+    },
+
+    "security" :
+    {
+        "checksum_algorithm" :  "sha512",
+
+        "encryption" :
+        {
+            "enable"                    :  "yes",
+            "key_size"                  :  "256",
+            "base64_encode"             :  "no",
+            "passphrase"                :  "",
+            "random_passphrase_pattern" :  "print",
+            "random_passphrase_length"  :  128,
+            "private_key"               :  "~/keys/private.pem"
+        }
+    },
+
+    "reports" :
+    {
+        "mailboxes" :
+        [
+            {
+                "email_address"      :  "backups.archive@babaei.net",
+                "attach_passphrases" :  "yes"
+            },
+            {
+                "email_address"      :  "backups.verify@babaei.net",
+                "attach_passphrases" :  "no"
+            }
+        ],
+
+        "subject" :
+        {
+            "success" :  "[{HOST_NAME} {DATE}] BACKUP REPORT / SUCCESS",
+            "error"   :  "[{HOST_NAME} {DATE}] BACKUP REPORT / ERROR",
+            "fatal"   :  "[{HOST_NAME} {DATE}] BACKUP REPORT / FATAL ERROR"
+        },
+
+        "support_info" :  "Have question or need technical assistance, please visit http://www.babaei.net/ or write an email to info [ at ] babaei.net."
+    },
+
+    "remote" :
+    {
+        "keep_backup_locally" :  "partial",
+
+        "servers" :
+        [
+            {
+                "host"                :  "10.12.0.4",
+                "port"                :  "22",
+                "user"                :  "babaei",
+                "dir"                 :  "~/backups/{HOST_NAME}",
+                "backups_to_preserve" :  7,
+                "public_key"          :  "~/keys/10.12.0.4_babaei.pem"
+            },
+            {
+                "host"                :  "example.domain",
+                "port"                :  "8931",
+                "user"                :  "babaei",
+                "dir"                 :  "~/backups/{HOST_NAME}",
+                "backups_to_preserve" :  31,
+                "public_key"          :  "~/keys/example.domain_babaei.pem"
+            }
+        ]
+    },
+
+    "backup" :
+    {
+        "archive_name" :  "{DATE}_{HOST_NAME}_{TAG}",
+
+        "priority_order" :
+        [
+            "openldap",
+            "database",
+            "filesystem",
+            "misc"
+        ],
+
+        "openldap" :
+        {
+            "tag"   :  "openldap-babaei-net",
+            "user"  :  "ldap",
+            "group" :  "ldap",
+            "flags" :  ""
+        },
+
+        "database" :
+        {
+            "priority_order" :
+            [
+                "postgres",
+                "mysql"
+            ],
+
+            "postgres" :
+            {
+                "user"  :  "pgsql",
+                "group" :  "pgsql",
+
+                "databases" :
+                [
+                    {
+                        "tag"     :  "postgres",
+                        "name"    :  "*",
+                        "comment" :  "All PostgreSQL databases"
+                    },
+                    {
+                        "tag"     :  "postgres-gitlab",
+                        "name"    :  "gitlab",
+                        "comment" :  "GitLab database"
+                    },
+                    {
+                        "tag"     :  "postgres-redmine",
+                        "name"    :  "redmine",
+                        "comment" :  "Redmine database"
+                    },
+                    {
+                        "tag"     :  "postgres-agilo",
+                        "name"    :  "agilo",
+                        "comment" :  "Agilo for Trac database"
+                    },
+                    {
+                        "tag"     :  "postgres-owncloud",
+                        "name"    :  "owncloud",
+                        "comment" :  "ownCloud database"
+                    },
+                    {
+                        "tag"     :  "postgres-tracks",
+                        "name"    :  "tracks",
+                        "comment" :  "Get on Tracks database"
+                    }
+                ]
+            },
+
+            "mysql" :
+            {
+                "user"          :  "mysql",
+                "group"         :  "mysql",
+                "internal_user" :  "root",
+
+                "databases" :
+                [
+                    {
+                        "tag"     :  "mysql",
+                        "name"    :  "*",
+                        "comment" :  "All MySQL databases"
+                    },
+                    {
+                        "tag"     :  "mysql-piwik",
+                        "name"    :  "piwik",
+                        "comment" :  "Piwik database"
+                    },
+                    {
+                        "tag"     :  "mysql-osticket",
+                        "name"    :  "osticket",
+                        "comment" :  "Piwik database"
+                    }
+                ]
+            }
+        },
+
+        "filesystem" :
+        [
+            {
+                "tag"             :  "www",
+                "path"            :  "/usr/local/www/nginx",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "Web server root directory"
+            },
+            {
+                "tag"             :  "repos",
+                "path"            :  "/usr/local/gitlab",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "GitLab repositories"
+            },
+            {
+                "tag"             :  "mail",
+                "path"            :  "/usr/local/mail",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "Mail server root directory"
+            },
+            {
+                "tag"             :  "etc-system",
+                "path"            :  "/etc",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "Base system configurations"
+            },
+            {
+                "tag"             :  "etc-ports",
+                "path"            :  "/usr/local/etc",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "Installed ports configurations"
+            },
+            {
+                "tag"             :  "loader-conf",
+                "path"            :  "/boot/loader.conf",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "System bootstrap configuration information"
+            },
+            {
+                "tag"             :  "boot-splash",
+                "path"            :  "/boot/splash.pcx",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "Boot-time splash screen"
+            },
+            {
+                "tag"             :  "slim-fbsd-theme",
+                "path"            :  "/usr/local/share/slim/themes/fbsd",
+                "follow_symlinks" :  "yes",
+                "comment"         :  "FreeBSD SLiM theme"
+            }
+        ],
+
+        "misc" :
+        [
+            {
+                "tag"                   :  "cloudflare-ip-ranges",
+                "command"               :  "/usr/local/www/nginx/cron/cloudflare-ip-ranges-updater.sh",
+                "args"                  :  "ipv4 ipv6",
+                "path"                  :  "/usr/local/www/nginx/include/cloudflare",
+                "follow_symlinks"       :  "yes",
+                "remove_path_when_done" :  "no",
+                "comment"               :  "CloudFlare IP database for nginx RealIP module"
+            }
+        ]
+    },
+
+    "command" :
+    {
+        "basename" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "bzip2" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "caller" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "cat" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "cd" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "chown" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "cut" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "date" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "du" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "dirname" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "echo" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "expr" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "flock" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "grep" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "gzip" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "head" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "hostname" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "jq" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_1"   :  "The last output value was either false or null.",
+                "rc_2"   :  "Usage problem or system error.",
+                "rc_3"   :  "Compile error,.",
+                "rc_4"   :  "Parse error.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "logger" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "mail" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "mkdir" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "mysqldump" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "openssl" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "pg_dump" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "pg_dumpall" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "printf" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "readlink" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "rm" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "scp" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "Operation was successful.",
+                "rc_1"   :  "General error in file copy.",
+                "rc_2"   :  "Destination is not directory, but it should be.",
+                "rc_3"   :  "Maximum symlink level exceeded.",
+                "rc_4"   :  "Connecting to host failed.",
+                "rc_5"   :  "Connection broken.",
+                "rc_6"   :  "File does not exist.",
+                "rc_7"   :  "No permission to access file.",
+                "rc_8"   :  "General error in sftp protocol.",
+                "rc_9"   :  "File transfer protocol mismatch.",
+                "rc_10"  :  "No file matches a given criteria.",
+                "rc_65"  :  "Host not allowed to connect.",
+                "rc_66"  :  "General error in ssh protocol.",
+                "rc_67"  :  "Key exchange failed.",
+                "rc_68"  :  "Reserved.",
+                "rc_69"  :  "MAC error.",
+                "rc_70"  :  "Compression error.",
+                "rc_71"  :  "Service not available.",
+                "rc_72"  :  "Protocol version not supported.",
+                "rc_73"  :  "Host key not verifiable.",
+                "rc_74"  :  "Connection failed.",
+                "rc_75"  :  "Disconnected by application.",
+                "rc_76"  :  "Too many connections.",
+                "rc_77"  :  "Authentication cancelled by user.",
+                "rc_78"  :  "No more authentication methods available.",
+                "rc_79"  :  "Invalid user name.",
+                "rc_any" :  "Unknown scp error."
+            }
+        },
+
+        "slapcat" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "ssh" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "Operation was successful.",
+                "rc_1"   :  "Generic error.",
+                "rc_2"   :  "Connection failed.",
+                "rc_10"  :  "No file matches a given criteria.",
+                "rc_65"  :  "Host not allowed to connect.",
+                "rc_66"  :  "General error in ssh protocol.",
+                "rc_67"  :  "Key exchange failed.",
+                "rc_68"  :  "Reserved.",
+                "rc_69"  :  "MAC error.",
+                "rc_70"  :  "Compression error.",
+                "rc_71"  :  "Service not available.",
+                "rc_72"  :  "Protocol version not supported.",
+                "rc_73"  :  "Host key not verifiable.",
+                "rc_74"  :  "Connection failed.",
+                "rc_75"  :  "Disconnected by application.",
+                "rc_76"  :  "Too many connections.",
+                "rc_77"  :  "Authentication cancelled by user.",
+                "rc_78"  :  "No more authentication methods available.",
+                "rc_79"  :  "Invalid user name.",
+                "rc_255" :  "Generic ssh error.",
+                "rc_any" :  "Unknown ssh error."
+            }
+        },
+
+        "strings" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "sudo" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "tar" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "tr" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        },
+
+        "xz" :
+        {
+            "return_code" :
+            {
+                "rc_0"   :  "The operation completed successfully.",
+                "rc_any" :  "The operation failed."
+            }
+        }
+    }
+}
+
+
