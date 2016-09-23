@@ -24,11 +24,12 @@
 
 #  OmniBackup
 #  One Script to back them all up
-#  Version 0.1.0
+#  Version 0.1.2
 
 #  ToDo
 #   * Restore script
 #   * GnuPG integration
+#   * SFTP and FTP support
 #   * Refactoring and code clean-up
 #   * Any potential bug fixes
 
@@ -38,7 +39,7 @@ readonly START_SECOND=${SECONDS}
 readonly APP_NAME="OmniBackup"
 readonly APP_VERSION_MAJOR="0"
 readonly APP_VERSION_MINOR="1"
-readonly APP_VERSION_PATCH="0"
+readonly APP_VERSION_PATCH="2"
 
 CONFIG_FILE="config.json"
 readonly LOCK_FILE="/var/run/omnibackup.lock"
