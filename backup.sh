@@ -24,7 +24,7 @@
 
 #  OmniBackup
 #  One Script to back them all up
-#  Version 0.1.2
+#  Version 0.2.0
 
 #  ToDo
 #   * Restore script
@@ -38,9 +38,10 @@ readonly START_SECOND=${SECONDS}
 
 readonly APP_NAME="OmniBackup"
 readonly APP_VERSION_MAJOR="0"
-readonly APP_VERSION_MINOR="1"
-readonly APP_VERSION_PATCH="2"
+readonly APP_VERSION_MINOR="2"
+readonly APP_VERSION_PATCH="0"
 
+readonly CONFIG_DIRS=( "~/.omnibackup" "/usr/local/etc/omnibackup" "/etc/omnibackup" "" )
 CONFIG_FILE="config.json"
 readonly LOCK_FILE="/var/run/omnibackup.lock"
 
@@ -2184,7 +2185,6 @@ function initialize()
     readonly SCRIPT="$( "${READLINK}" -f "${BASH_SOURCE[0]}" )"
     readonly SCRIPT_DIR="$( "${DIRNAME}" "${SCRIPT}" )"
     readonly SCRIPT_NAME="$( "${BASENAME}" "${SCRIPT}" )"
-    readonly CONFIG_FILE="${SCRIPT_DIR}/${CONFIG_FILE}"
 
     blindInitialize
 
@@ -2225,10 +2225,58 @@ function initialize()
 
     log "Initiating 'Config' module..."
 
-    if [[ ! -f "${CONFIG_FILE}" ]] ;
+    local foundConfigFile=${E_NO}
+
+    if [[ "${#CONFIG_DIRS[@]}" -gt 0 ]] ;
     then
+        for path in "${CONFIG_DIRS[@]}" ;
+        do
+            eval path=${path}
+            if [[ ! -z "${path}" ]] ;
+            then
+                logInfo "Looking for '${CONFIG_FILE}' inside '${path}'..."
+                if [[ -f "${path}/${CONFIG_FILE}" ]] ;
+                then
+                    foundConfigFile=${E_YES}
+                    readonly CONFIG_FILE="${path}/${CONFIG_FILE}"
+                    logInfo "Found '${CONFIG_FILE}'."
+                    break
+                else
+                    logInfo "Cannot find '${CONFIG_FILE}' in ${path}."
+                fi
+            else
+                logInfo "Looking for '${CONFIG_FILE}' in current directory..."
+                if [[ -f "${SCRIPT_DIR}/${CONFIG_FILE}" ]] ;
+                then
+                    foundConfigFile=${E_YES}
+                    readonly CONFIG_FILE="${SCRIPT_DIR}/${CONFIG_FILE}"
+                    logInfo "Found '${CONFIG_FILE}'."
+                    break;
+                else
+                    logInfo "Cannot find '${CONFIG_FILE}' in current directory."
+                fi
+            fi
+        done
+    else
+        logInfo "Looking for '${CONFIG_FILE}' in current directory..."
+        if [[ -f "${SCRIPT_DIR}/${CONFIG_FILE}" ]] ;
+        then
+            foundConfigFile=${E_YES}
+            readonly CONFIG_FILE="${SCRIPT_DIR}/${CONFIG_FILE}"
+            logInfo "Found '${CONFIG_FILE}'."
+        else
+            logInfo "Cannot find '${CONFIG_FILE}' in current directory."
+        fi
+    fi
+
+    if [[ "${foundConfigFile}" = "${E_YES}" ]] ;
+    then
+        logInfo "Using '${CONFIG_FILE}'..."
+    else
         configParseError "'${CONFIG_FILE}' does not exists!"
     fi
+    unset foundConfigFile
+
 
     initializeCommands "cat" "jq"
     logInfo "'Config' module initialized successfully."

@@ -187,7 +187,16 @@ $ service syslog-ng start
 
 ### Installation
 
-Installing OmniBackup is really easy. It consists of two files: a huge script file -- a little less than <code>105 KB</code> -- named <code>backup.sh</code> which looks for the second file at runtime named <code>config.json</code>. So, let's say I want to install OmniBackup inside <code>/usr/local/omnibackup</code>. In addition to that, I assume from now on you do everything as <code>root</code> user:
+Installing OmniBackup is really easy. It consists of two files: a huge script file -- approximately <code>107 KB</code> -- named <code>backup.sh</code> which looks for the second file at runtime named <code>config.json</code>. It looks for <code>config.json</code> in the following order:
+
+1. In the user's home directory <code>~</code> that OmniBackup runs under. e.g: <code>/root/.omnibackup/config.json</code> or <code>/home/babaei/.omnibackup/config.json</code>
+2. In <code>/usr/local/etc/omnibackup/config.json</code>
+3. In <code>/etc/omnibackup/config.json</code>
+4. In the current directory which is the directory that OmniBackup executable itself resides
+
+For the sake of simplicity I'll keep the <code>config.json</code> file in the same directory as the executable itself, in the rest of this document.
+
+So, let's say I want to install OmniBackup inside <code>/usr/local/omnibackup</code>. In addition to that, I assume from now on you do everything as <code>root</code> user:
 
 ```
 $ cd /usr/local/
