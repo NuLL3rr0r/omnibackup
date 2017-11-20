@@ -9,7 +9,7 @@ OmniBackup is a MIT-licensed Bash script which delivers the following set of fea
 * Support for MariaDB and MySQL backups as a whole or per database
 * Support for filesystem backups with optional ability to follow symbolic links
 * Support for pluggable customized scripts to extend OmniBackup functionality beyond its original design which allows support for many different backup scenarios that has not been built into OmniBackup, yet
-* Backup file name tagging which allows including date or host name in the archive name
+* Backup file name tagging which allows including date, time, or host name in the archive name
 * Online backup without a prerequisite to suspend any service
 * Support for customized backup tasks priority order
 * Support for multiple backup servers
@@ -351,7 +351,7 @@ Reports module is here to allow you become aware of all the details of the event
 
 <code>.reports.mailboxes.attach_passphrases</code> determines whether passphrases for archive files should be attached to the reports for that specific email or not.
 
-<code>.reports.subject</code> provides the ability to determine the subject of reports for different scenarios that might happen during the backup process at runtime, so by looking at your inbox you immediately realize what happened and take the appropriate action if it's necessary. <code>{HOST_NAME}</code> and <code>{DATE}</code> are recognized special placeholder keywords. They will be replaced at runtime by the host name OmniBackup backup running on or the date OmniBackup instance starts backup jobs, respectively.
+<code>.reports.subject</code> provides the ability to determine the subject of reports for different scenarios that might happen during the backup process at runtime, so by looking at your inbox you immediately realize what happened and take the appropriate action if it's necessary. <code>{HOST_NAME}</code> and <code>{DATE}</code> are recognized special placeholder keywords. They will be replaced at runtime by the host name OmniBackup backup running on or the date OmniBackup instance starts backup jobs, respectively. There is also a <code>{TIME}</code> variable if one desires to include the time in the subject of the email.
 
 <code>.reports.success</code> is the email subject when backup process finished successfully.
 
@@ -435,7 +435,7 @@ Using the <code>.remote</code> section of the configuration file, you can config
 }
 ```
 
-<code>.backup.archive_name</code> is a pattern for archive file names. You can prefix or postfix them as you wish by modifying this option. <code>{DATE}</code> shall be replaced by the actual date that OmniBackup script started. The date format is fixed and looks like <code>YYYY-MM-DD</code>. <code>{HOST_NAME}</code> shall be replaced by the host name that OmniBackup runs on. <code>{TAG}</code> is an option for each item that should be backed up, so it shall be replaced with that option's value for each backup task. So, with above configuration in mind, a typical backup archive file should look like this:
+<code>.backup.archive_name</code> is a pattern for archive file names. You can prefix or postfix them as you wish by modifying this option. <code>{DATE}</code> shall be replaced by the actual date that OmniBackup script started. The date format is fixed and looks like <code>YYYY-MM-DD</code>. If you need to include the time in addition to the date, a <code{TIME}></code> option is also available in <code>HH-MM-SS</code> form. <code>{HOST_NAME}</code> shall be replaced by the host name that OmniBackup runs on. <code>{TAG}</code> is an option for each item that should be backed up, so it shall be replaced with that option's value for each backup task. So, with above configuration in mind, a typical backup archive file should look like this:
 
     2015-07-31_blog.babaei.net_openldap-babaei-net.tar.xz
 

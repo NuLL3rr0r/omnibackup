@@ -1550,6 +1550,7 @@ function archive()
         local rc
 
         local archive_file="${CONF_BACKUP_ARCHIVE_NAME//'{DATE}'/${BACKUP_DATE}}"
+        archive_file="${archive_file//'{TIME}'/${BACKUP_TIME}}"
         archive_file="${archive_file//'{HOST_NAME}'/${BACKUP_HOST_NAME}}"
         archive_file="${archive_file//'{TAG}'/${tag}}"
         archive_file="${archive_file}.${ARCHIVE_EXTENSION}"
@@ -1843,6 +1844,7 @@ function backupLdap()
     local rc
 
     local backup_name="${CONF_BACKUP_ARCHIVE_NAME//'{DATE}'/${BACKUP_DATE}}"
+    backup_name="${backup_name//'{TIME}'/${BACKUP_TIME}}"
     backup_name="${backup_name//'{HOST_NAME}'/${BACKUP_HOST_NAME}}"
     backup_name="${backup_name//'{TAG}'/${CONF_BACKUP_OPENLDAP_TAG}}"
 
@@ -1969,6 +1971,7 @@ function backupDatabases()
         log "Creating a backup from '${comment}'..."
 
         local backup_name="${CONF_BACKUP_ARCHIVE_NAME//'{DATE}'/${BACKUP_DATE}}"
+        backup_name="${backup_name//'{TIME}'/${BACKUP_TIME}}"
         backup_name="${backup_name//'{HOST_NAME}'/${BACKUP_HOST_NAME}}"
         backup_name="${backup_name//'{TAG}'/${tag}}"
 
@@ -2189,6 +2192,7 @@ function initialize()
     blindInitialize
 
     readonly BACKUP_DATE="$( "${DATE}" +%Y-%m-%d )"
+    readonly BACKUP_TIME="$( "${DATE}" +%H-%M-%S )"
     readonly BACKUP_HOST_NAME="$( "${HOSTNAME}" )"
     readonly BACKUP_TAG="backup.${BACKUP_DATE}.$$"
     readonly LOG_FILE="/var/tmp/${BACKUP_TAG}.log"
@@ -2411,11 +2415,14 @@ function initialize()
     jsonValue CONF_REPORTS_SUPPORT_INFO '.reports.support_info'
 
     CONF_REPORTS_SUBJECT_SUCCESS="${CONF_REPORTS_SUBJECT_SUCCESS//'{HOST_NAME}'/${BACKUP_HOST_NAME}}"
-    readonly CONF_REPORTS_SUBJECT_SUCCESS="${CONF_REPORTS_SUBJECT_SUCCESS//'{DATE}'/${BACKUP_DATE}}"
+    CONF_REPORTS_SUBJECT_SUCCESS="${CONF_REPORTS_SUBJECT_SUCCESS//'{DATE}'/${BACKUP_DATE}}"
+    readonly CONF_REPORTS_SUBJECT_SUCCESS="${CONF_REPORTS_SUBJECT_SUCCESS//'{TIME}'/${BACKUP_TIME}}"
     CONF_REPORTS_SUBJECT_ERROR="${CONF_REPORTS_SUBJECT_ERROR//'{HOST_NAME}'/${BACKUP_HOST_NAME}}"
-    readonly CONF_REPORTS_SUBJECT_ERROR="${CONF_REPORTS_SUBJECT_ERROR//'{DATE}'/${BACKUP_DATE}}"
+    CONF_REPORTS_SUBJECT_ERROR="${CONF_REPORTS_SUBJECT_ERROR//'{DATE}'/${BACKUP_DATE}}"
+    readonly CONF_REPORTS_SUBJECT_ERROR="${CONF_REPORTS_SUBJECT_ERROR//'{TIME}'/${BACKUP_TIME}}"
     CONF_REPORTS_SUBJECT_FATAL="${CONF_REPORTS_SUBJECT_FATAL//'{HOST_NAME}'/${BACKUP_HOST_NAME}}"
-    readonly CONF_REPORTS_SUBJECT_FATAL="${CONF_REPORTS_SUBJECT_FATAL//'{DATE}'/${BACKUP_DATE}}"
+    CONF_REPORTS_SUBJECT_FATAL="${CONF_REPORTS_SUBJECT_FATAL//'{DATE}'/${BACKUP_DATE}}"
+    readonly CONF_REPORTS_SUBJECT_FATAL="${CONF_REPORTS_SUBJECT_FATAL//'{TIME}'/${BACKUP_TIME}}"
 
     initializeCommands "mail" "printf"
     REPORTS_STATUS="${SUCCESS_TAG}"
