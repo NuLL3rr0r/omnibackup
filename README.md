@@ -187,6 +187,23 @@ $ service syslog-ng start
 
 ### Installation
 
+#### FreeBSD
+
+From FreeBSD Ports:
+
+```
+$ cd /usr/ports/sysutils/omnibackup
+$ make install clean
+```
+
+Binary install using <code>pkgng</code>
+
+```
+$ pkg install sysutils/omnibackup
+```
+
+#### From GitHub / GitLab
+
 Installing OmniBackup is really easy. It consists of two files: a huge script file -- approximately <code>107 KB</code> -- named <code>backup.sh</code> which looks for the second file at runtime named <code>config.json</code>. It looks for <code>config.json</code> in the following order:
 
 1. In the user's home directory <code>~</code> that OmniBackup runs under. e.g: <code>/root/.omnibackup/config.json</code> or <code>/home/babaei/.omnibackup/config.json</code>
@@ -200,7 +217,21 @@ So, let's say I want to install OmniBackup inside <code>/usr/local/omnibackup</c
 
 ```
 $ cd /usr/local/
+```
+
+GitHub:
+
+```
 $ git clone https://github.com/NuLL3rr0r/omnibackup.git
+```
+
+GitLab:
+
+```
+$ git clone https://github.com/NuLL3rr0r/omnibackup.git
+```
+
+```
 $ cd omnibackup
 $ cp config.json.sample config.json
 $ chmod u+rx,go-r,a-w backup.sh
