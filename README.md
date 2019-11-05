@@ -2096,7 +2096,7 @@ Have question or need technical assistance, please visit http://www.babaei.net/ 
 
 ### ToDo
 
-There is also a list of planned features and TODOs which did not make it into <code>0.1.x</code> release:
+There is also a list of planned features and TODOs which did not make it into the current release:
 
 * Restore script
 * GnuPG integration
